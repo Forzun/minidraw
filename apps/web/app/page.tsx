@@ -23,12 +23,12 @@ export default function Home() {
     <div className={styles.page}>
       <main className={styles.main}>
         <ThemeImage
-          className={styles.logo}
+          className={styles.logo}  
           srcLight="turborepo-dark.svg"
           srcDark="turborepo-light.svg"
           alt="Turborepo logo"
           width={180}
-          height={38}
+          height={38} 
           priority
         />
         <ol>
