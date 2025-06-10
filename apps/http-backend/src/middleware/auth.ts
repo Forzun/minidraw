@@ -15,11 +15,10 @@ export const userMiddleware = (req:Request , res: Response , next:NextFunction) 
             req.userId = decode.userId; 
             next();
         }else{ 
-            res.json({ 
+            res.json({     
                 message:"Token in invalid"
             })
         }
-
 
     }catch(error){ 
         res.json({
