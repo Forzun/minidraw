@@ -1,5 +1,6 @@
 import { NextFunction, Request , Response } from "express";
 import jwt from "jsonwebtoken"; 
+import { JWT_SECRET } from "../config";
 
 
 export const userMiddleware = (req:Request , res: Response , next:NextFunction) => { 
@@ -7,7 +8,7 @@ export const userMiddleware = (req:Request , res: Response , next:NextFunction) 
         const header = req.headers['authorization'];
         console.log(header)
 
-        const decode = jwt.verify(header as string , "SECRET");
+        const decode = jwt.verify(header as string , JWT_SECRET as string);
         console.log(decode)
 
         if(decode){ 

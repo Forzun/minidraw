@@ -1,4 +1,6 @@
 import { WebSocket, WebSocketServer } from "ws";
+import jwt, { JwtPayload } from "jsonwebtoken";
+import { JWT_SECRET } from "./config";
 
 const wss = new WebSocketServer({port: 8080}); 
 
@@ -11,34 +13,20 @@ interface User {
 
 let allSocket: User[] = [];
 
-wss.on("connection", function connection(socket){ 
+wss.on("connection", function connection(socket , requset){   
+    const url = requset.url; 
 
-    socket.on("message", (message) => { 
-        //@ts-ignore
-        const parsedMessage = JSON.parse(message);
-        console.log(parsedMessage);
+    if(!url){ 
+        return;
+    }
 
-        if(parsedMessage.type == "join"){ 
-            console.log(allSocket);
-            console.log("user join`")
-            allSocket.push({ 
-                socket:socket, 
-                name:parsedMessage.payload.name,
-                room:parsedMessage.payload.roomId,
-            })
-        }
+    const queryParams = new URLSearchParams(url.split("?")[1]); 
+    const token = queryParams.get("token") || "";
+    const decoded = jwt.verify(token, JWT_SECRET);
 
-        if(parsedMessage.type == "chat"){ 
-            console.log("user want's to chat");
-            let currentUserRoom = allSocket.find(x => x.socket == socket)?.room;
-            
-            allSocket.find(socket => { 
-                if(socket.room == currentUserRoom){ 
-                    socket.socket.send(parsedMessage.payload.message)
-                }
-            })
+    if(!decoded || !(decoded as JwtPayload).userId){ 
+        wss.close(); 
+        return;
+    }
 
-        }
-    })
 })
-1
