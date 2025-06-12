@@ -11,34 +11,33 @@ app.use(express.json());
 
 app.post("/signup", async function(req ,res){ 
     try{ 
-        const data = CreateUserSchema.safeParse(req.body);
+        const ParseData = CreateUserSchema.safeParse(req.body);
 
-        if(!data.success){ 
+        if(!ParseData.success){ 
             res.json({ 
                 message:"Incorrect inputs"
-            })
+            })  
             return;
         }
 
         const existingUser = await prismaClient.user.findFirst({ 
             where:{
-                email:req.body.email
+                email:ParseData.data.username
             },
         })
 
         if(existingUser){ 
-            res.json({ 
-                user:existingUser,
+            res.status(409).json({ 
+                user:existingUser.id,
             })
             return;
         }
 
         const user = await prismaClient.user.create({ 
             data:{ 
-                email:req.body.email, 
-                password:req.body.password,
-                name:req.body.password, 
-                photo: req.body.photo,
+               email: ParseData.data?.username, 
+               password: ParseData.data?.password,
+               name: ParseData.data?.name
             }
         })
 
@@ -47,13 +46,13 @@ app.post("/signup", async function(req ,res){
                 user:user,
             })
         }else{ 
-            res.json({ 
+            res.status(202).json({ 
                 message:"Something went wrong",
             })
         }
         
     }catch(error){ 
-        res.json({ 
+        res.status(400).json({ 
             error:error
         })
     }
@@ -61,13 +60,16 @@ app.post("/signup", async function(req ,res){
 
 app.post("/signin", userMiddleware , function(req , res) { 
     
-    const data = SigninSchema.safeParse(req.body); 
-    if(!data.success){ 
+    const parseData = SigninSchema.safeParse(req.body); 
+    if(!parseData.success){ 
          res.json({ 
             message:"Incorrect inputs"
         }) 
         return;
     }
+
+    
+
     const userId = 1;
     const token = jwt.sign({ 
         userId:userId,
