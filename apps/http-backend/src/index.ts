@@ -28,6 +28,7 @@ app.post("/signup", async function(req ,res){
 
         if(existingUser){ 
             res.status(409).json({ 
+                message:"user already exist",
                 user:existingUser.id,
             })
             return;
@@ -58,44 +59,92 @@ app.post("/signup", async function(req ,res){
     }
 })
 
-app.post("/signin", userMiddleware , function(req , res) { 
-    
-    const parseData = SigninSchema.safeParse(req.body); 
-    if(!parseData.success){ 
-         res.json({ 
-            message:"Incorrect inputs"
-        }) 
-        return;
-    }
+app.post("/signin", async function(req , res) { 
+    try{ 
 
-    
-
-    const userId = 1;
-    const token = jwt.sign({ 
-        userId:userId,
-    }, JWT_SECRET);
-
-    res.json({ 
-        token:token,
-    })
-})
-
-app.post("/room", userMiddleware , function(req , res){ 
-    try{
-        const data = CreateRoomSchema.safeParse(req.body); 
-        if(!data.success){ 
-             res.json({ 
+        const parseData = SigninSchema.safeParse(req.body); 
+        if(!parseData.success){ 
+            res.json({ 
                 message:"Incorrect inputs"
+            }) 
+            return;
+        }
+
+        const user = await prismaClient.user.findFirst({
+            where:{ 
+                email: parseData.data.username, 
+                password: parseData.data.password,
+            }
+        })
+        console.log(user)
+
+        if(!user){ 
+            res.status(403).json({ 
+                message:"Not authorized",
             })
             return;
         }
 
+        const token = jwt.sign({ 
+             userId:user?.id
+        }, JWT_SECRET);
+
         res.json({ 
-            roomId:123
+            token:token, 
+            user:user
+        })
+
+    }catch(error){ 
+        res.status(400).json({
+            error:error
+        })
+    }
+})
+
+app.post("/room", userMiddleware ,async function(req , res){ 
+    try{
+        const parseData = await CreateRoomSchema.safeParse(req.body);// only name
+        if(!parseData.success){ 
+             res.json({ 
+                message:"Incorrect inputs"
+            })
+            return;
+        }   
+
+        const existRoom = await prismaClient.room.findFirst({ 
+            where: {
+                slug: parseData.data.name
+            }
+        })
+
+        if(existRoom){ 
+            res.status(400).json({ 
+                message:"room already exist with this name", 
+                result:{ 
+                    room:existRoom.slug,
+                    roomId: existRoom.id
+                }
+            })
+        }
+
+        // @ts-ignore
+        const userId = req.userId;
+
+        const room = await prismaClient.room.create({ 
+            data: {
+                slug:parseData.data.name, 
+                adminId: userId
+            }
+        })
+
+        res.status(200).json({  
+            roomId: room.id
         })
          
     }catch(error){ 
-
+        res.status(400).json({ 
+            message:"room already exist with this name"
+        })
     }
 })
  
