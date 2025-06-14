@@ -18,4 +18,3 @@ export const CreateRoomSchema = z.object({
 export type CreateUserSchema = z.infer<typeof CreateUserSchema> 
 export type SigninSchema = z.infer<typeof SigninSchema>
 export type CreateRoomSchema = z.infer<typeof CreateRoomSchema>
-

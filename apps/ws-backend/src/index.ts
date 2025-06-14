@@ -1,32 +1,91 @@
 import { WebSocket, WebSocketServer } from "ws";
-import jwt, { JwtPayload } from "jsonwebtoken";
+import jwt from "jsonwebtoken";
 import { JWT_SECRET } from "@repo/backend-common/config"
 
 const wss = new WebSocketServer({port: 8080}); 
 
 interface User { 
-    socket: WebSocket, 
-    name:string,
-    room:string,
+    userId:string,
+    rooms:string[],
+    ws: WebSocket, 
 }
 
+const users:User[] = []
+
+
+function checkUser(token: string): string | null { 
+    try{ 
+        const decoded = jwt.verify(token, JWT_SECRET); 
+
+        if(typeof decoded === "string"){ 
+            return null;
+        }
+
+        if(!decoded || !decoded.userId){ 
+            return null;
+        }
+
+        return decoded.userId;
+        
+    }catch(error){ 
+        return null
+    }
+    return null;
+}
 
 let allSocket: User[] = [];
 
-wss.on("connection", function connection(socket , requset){   
+wss.on("connection", function connection(ws , requset){   
     const url = requset.url; 
-
     if(!url){ 
         return;
     }
 
     const queryParams = new URLSearchParams(url.split("?")[1]); 
     const token = queryParams.get("token") || "";
-    const decoded = jwt.verify(token, JWT_SECRET);
+    const userId = checkUser(token);
 
-    if(!decoded || !(decoded as JwtPayload).userId){ 
-        wss.close(); 
-        return;
+    if(userId == null){ 
+        ws.close();
+        return; 
     }
 
+    users.push({
+        userId: userId, 
+        rooms:[], 
+        ws:ws
+    })
+
+    ws.on("message", function message(data) { 
+        const parseData = JSON.parse(data as unknown as string)
+            
+        if(parseData.type === "join_room") { 
+            const user = users.find(x => x.ws === ws); // finding the user with ws
+            user?.rooms.push(parseData.roomId);
+        }
+
+        if(parseData.type === "leave_room") { 
+            const user = users.find(x => x.ws === ws) 
+            if(!user){ 
+                return;
+            }
+            user.rooms = user?.rooms.filter(x => x === parseData.room); // red == red
+        } 
+
+        if(parseData.type === "chat") { 
+            const roomId = parseData.roomId; 
+            const message = parseData.message; 
+
+            users.forEach(user => { 
+                if(user.rooms.includes(roomId))
+                user.ws.send(JSON.stringify({
+                    type: "chat", 
+                    message:message, 
+                    roomId:roomId
+                }))
+            })
+
+        }
+
+    })
 })
