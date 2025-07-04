@@ -140,7 +140,6 @@ app.post("/room", userMiddleware ,async function(req , res){
         res.status(200).json({  
             roomId: room.id
         })
-         
     }catch(error){ 
         res.status(400).json({ 
             message:"room already exist with this name"

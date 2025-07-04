@@ -51,7 +51,7 @@ wss.on("connection", async function connection(ws , requset){
         return; 
     }
 
-    users.push({
+    users.push({ 
         userId: userId, 
         rooms:[], 
         ws:ws

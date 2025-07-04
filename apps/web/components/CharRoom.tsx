@@ -8,6 +8,7 @@ async function getChats(roomId: string){
 }
 
 export default async function CharRoom({id}: {id: string}){
+    console.log(id)
     const message = await getChats(id)
 
     return <ChatRoomClient message={message} id={id} ></ChatRoomClient>
