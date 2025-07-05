@@ -8,30 +8,33 @@ export function ChatRoomClient({message , id} : {
     message: {message: string}[] ; 
     id: string
 }){ 
-
     const [chats , setChats] = useState(message);
     const {loading , socket} = useSocket()
     const [currentMessage , setCurrentMessage] = useState("");
+    console.log(chats)
 
     useEffect(() => { 
-        if(socket && !loading){
-            socket.onmessage = (event) => { 
+        if(socket && !loading){ 
+            console.log("runnig inside the loop")
 
-                socket.send(JSON.stringify({ 
-                    type: "join_room",
-                    roomId: id
-                }))
-                
+            socket.send(JSON.stringify({ 
+                type:"join_room", 
+                roomId:id
+            }))
+
+            socket.onmessage = (event) => {
+                console.log("join the room")
                 const parseData = JSON.parse(event.data);
                 if(parseData.type === "chat"){ 
                     setChats(c => [...c , {message : parseData.message}]);
+                    console.log(chats)
                 }
             }
         }
     }, [loading , socket , id])
     
     return <div>
-        {message.map(m => <div key={Math.random()}>{m.message}</div>)}
+        {chats.map(m => <div key={Math.random()}>{m.message}</div>)}
 
         <input type="text" value={currentMessage} onChange={e => { 
             setCurrentMessage(e.target.value);
@@ -40,8 +43,8 @@ export function ChatRoomClient({message , id} : {
         <button onClick={() => { 
             socket?.send(JSON.stringify({ 
                 type:"chat", 
-                roomId: id, 
-                message:currentMessage
+                message:currentMessage,
+                roomId:id
             }))
 
             setCurrentMessage("");

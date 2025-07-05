@@ -148,6 +148,7 @@ app.post("/room", userMiddleware ,async function(req , res){
 })
 
 app.get("/chat/:roomId", async (req , res) => { 
+    try{ 
     const roomId = Number(req.params.roomId);
     const message = await prismaClient.chat.findMany({ 
         where: {
@@ -158,10 +159,13 @@ app.get("/chat/:roomId", async (req , res) => {
         }, 
         take:50
     })
-
+    console.log(message)
     res.json({ 
         message: message
     })
+    }catch(erorr){ 
+        console.log(erorr)
+    }
 
 })
 
