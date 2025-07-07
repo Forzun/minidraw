@@ -40,7 +40,7 @@ export function ChatRoomClient({message , id} : {
             setCurrentMessage(e.target.value);
         }} ></input>
 
-        <button onClick={() => { 
+        <button onClick={() => {    
             socket?.send(JSON.stringify({ 
                 type:"chat", 
                 message:currentMessage,
