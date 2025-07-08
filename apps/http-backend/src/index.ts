@@ -4,10 +4,12 @@ import { userMiddleware } from "./middleware/auth";
 import { JWT_SECRET } from "@repo/backend-common/config"; 
 import { CreateRoomSchema, CreateUserSchema, SigninSchema} from "@repo/common/types"
 import { prismaClient } from "@repo/db/client";
+import cors from "cors";
 
 const app = express(); 
 
 app.use(express.json());
+app.use(cors());
 
 app.post("/signup", async function(req ,res){ 
     try{ 
@@ -159,7 +161,6 @@ app.get("/chat/:roomId", async (req , res) => {
         }, 
         take:50
     })
-    console.log(message)
     res.json({ 
         message: message
     })
