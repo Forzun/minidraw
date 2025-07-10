@@ -38,6 +38,14 @@ export class Game {
         this.click = false;
     }
 
+    destory(){ 
+        this.canvas?.removeEventListener("mousedown", this.mouseDownHandler)
+
+        this.canvas?.removeEventListener("mouseup", this.mouseUpHandler )
+
+        this.canvas?.removeEventListener("mousemove", this.mouseMoveHandler) 
+    }
+
     setTool(tool:"circle" | "rectangle" | "line"){ 
         this.selectedTool = tool;
     }
@@ -78,19 +86,18 @@ export class Game {
         })
     }
 
-    initMouseHandlers(){ 
-        this.canvas?.addEventListener("mousedown", (e) => { 
-            this.click = true;
-            this.startY = e.clientY; 
-            this.startX = e.clientX;
-        })
+    mouseDownHandler = (e:MouseEvent) => { 
+        this.click = true;
+        this.startY = e.clientY; 
+        this.startX = e.clientX;
+    }
 
-        this.canvas?.addEventListener("mouseup", (e) => {
+    mouseUpHandler = (e:MouseEvent) => {
             this.click = false
             const width = e.clientX - this.startX; 
             const height = e.clientY - this.startY;
             console.log(width , height)
-            //@ts-ignore
+
             const selectedTool = this.selectedTool;
             let shape : Shape | null = null;
             if(selectedTool === "rectangle"){
@@ -124,31 +131,36 @@ export class Game {
                 }),
                 roomId:this.roomId
             }))
-    
-        })
+    }
 
-        this.canvas?.addEventListener("mousemove", (e) => { 
-            if(this.click){ 3
-                const width = e.clientX - this.startX; 
-                const height = e.clientY - this.startY;
-                this.clearCanvas()    
-                this.ctx.strokeStyle = "rgba(255 , 255 ,255)"
-                //@ts-ignore
-                const selectedTool = this.selectedTool;
-                if(selectedTool === "rectangle"){ 
-                    this.ctx.strokeRect(this.startX, this.startY, width, height);
-                } else if(selectedTool === "circle"){ 
-                    const radius = Math.max(width , height) / 2;
-                    const centerX = this.startX + radius;
-                    const centerY = this.startY + radius;
-                    this.ctx.beginPath();
-                    this.ctx.arc(centerX , centerY , radius , 0 , Math.PI * 2);
-                    this.ctx.stroke();
-                    this.ctx.closePath();
-                }
+    mouseMoveHandler = (e:MouseEvent) =>{ 
+        if(this.click){ 
+            const width = e.clientX - this.startX; 
+            const height = e.clientY - this.startY;
+            this.clearCanvas()    
+            this.ctx.strokeStyle = "rgba(255 , 255 ,255)"
+            //@ts-ignore
+            const selectedTool = this.selectedTool;
+            if(selectedTool === "rectangle"){ 
+                this.ctx.strokeRect(this.startX, this.startY, width, height);
+            } else if(selectedTool === "circle"){ 
+                const radius = Math.max(width , height) / 2;
+                const centerX = this.startX + radius;
+                const centerY = this.startY + radius;
+                this.ctx.beginPath();
+                this.ctx.arc(centerX , centerY , radius , 0 , Math.PI * 2);
+                this.ctx.stroke();
+                this.ctx.closePath();
             }
-        })  
+        }
+    }
 
+    initMouseHandlers(){ 
+        this.canvas?.addEventListener("mousedown", this.mouseDownHandler)
+
+        this.canvas?.addEventListener("mouseup", this.mouseUpHandler )
+
+        this.canvas?.addEventListener("mousemove", this.mouseMoveHandler)
     }
 
 }

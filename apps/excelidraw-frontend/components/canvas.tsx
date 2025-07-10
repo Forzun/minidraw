@@ -21,6 +21,10 @@ export default function Canvas({roomId , socket} : {roomId: string , socket:WebS
         if(canvas){ 
             const g = new Game(canvas , roomId , socket);
             setGame(g);
+
+            return () => { 
+                g.destory();
+            }
         }        
 
     }, [canvasRef])
