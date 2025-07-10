@@ -10,6 +10,8 @@ params:{
     const roomId = (await params).roomId;
     console.log(roomId);
 
-    return <RoomCanvas roomId={roomId} />
+    return <div>
+        <RoomCanvas roomId={roomId} /> 
+    </div>
 }
 

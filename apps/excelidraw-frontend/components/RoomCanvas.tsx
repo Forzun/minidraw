@@ -1,8 +1,7 @@
 "use client";
 
 import { WS_URL } from "@/config";
-import { initDraw } from "@/draw";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import Canvas from "./canvas";
 
 export default function RoomCanvas({roomId}: { roomId: string}){ 
@@ -14,7 +13,7 @@ export default function RoomCanvas({roomId}: { roomId: string}){
         
         ws.onopen = () => { 
             setSocket(ws)
-            ws.send(JSON.stringify({ 
+            ws.send(JSON.stringify({
                 type:"join_room", 
                 roomId
             }))
@@ -24,11 +23,11 @@ export default function RoomCanvas({roomId}: { roomId: string}){
     if(!socket){ 
         return <div>
             Wait to connect..
-        </div>
+        </div>        
     }
 
-    return <div className="w-full h-screen bg-neutral-100">
-        <Canvas roomId={roomId} socket={socket} />
+    return <div className="w-full min-h-screen relative">
+        <Canvas roomId={roomId} socket={socket} /> 
     </div>
 }
 
