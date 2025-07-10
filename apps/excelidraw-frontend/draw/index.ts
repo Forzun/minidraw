@@ -39,7 +39,7 @@ export async function initDraw(canvas: HTMLCanvasElement , roomId: string , sock
         ctx.fillRect(0 , 0, canvas?.width, canvas?.height);
     }
 
-    clearCanvas(existingShapes , canvas , ctx);
+    clearCanvas(existingShapes , canvas , ctx); 
     
     let click = false;
     let startY = 0 ;

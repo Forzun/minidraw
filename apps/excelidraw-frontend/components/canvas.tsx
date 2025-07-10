@@ -2,23 +2,25 @@ import { initDraw } from "@/draw";
 import { useEffect, useRef, useState } from "react";
 import IconButton from "./IconButton";
 import { Circle, Minus, RectangleHorizontal } from "lucide-react";
+import { Game } from "@/draw/Game";
 
-type shape = "circle" | "rectangle" | "line";
+export type tool = "circle" | "rectangle" | "line";
 
 export default function Canvas({roomId , socket} : {roomId: string , socket:WebSocket}) { 
     const canvasRef = useRef<HTMLCanvasElement>(null);
-    const [selete , setSelect] = useState<shape>("circle");
+    const [game , setGame] = useState<Game>();
+    const [selete , setSelect] = useState<tool>("circle");
 
     useEffect(() => { 
-        //@ts-ignore
-        window.selectedTool = selete;
-    }, [selete])
+        game?.setTool(selete)
+    }, [selete , game])
 
     useEffect(() => {
         const canvas = canvasRef.current; 
 
         if(canvas){ 
-            initDraw(canvas , roomId , socket )
+            const g = new Game(canvas , roomId , socket);
+            setGame(g);
         }        
 
     }, [canvasRef])
@@ -29,7 +31,7 @@ export default function Canvas({roomId , socket} : {roomId: string , socket:WebS
     </div>
 }
 
-function TopBar({select , setSelect} : {select: string , setSelect:(shape: shape) => void}){ 
+function TopBar({select , setSelect} : {select: string , setSelect:(tool: tool) => void}){ 
 
     return <div className="fixed top-10 left-10"> 
         <div className="flex gap-2">
