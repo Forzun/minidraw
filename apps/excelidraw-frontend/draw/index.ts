@@ -2,17 +2,23 @@ import { HTTP_BACKEND } from "@/config";
 import axios from "axios"
 
 type Shape = { 
-    type: "rect";
-    x:number; 
-    y:number;
-    width:number;
-    height:number;
-} | {
-    type: "circle"; 
-    centerX:number; 
-    centerY:number; 
-    radius:number;
-}
+    type: "rect" | "circle" | "pencil" | "line";  
+    x?:number; 
+    y?:number;
+    width?:number;
+    height?:number;
+    path?:{x: string , y: string}[]; 
+
+    centerX?: number; 
+    centerY?: number; 
+    radius?: number; 
+
+    startX?: number; 
+    startY?: number; 
+    endX?: number; 
+    end?: number
+};
+
 
 export async function initDraw(canvas: HTMLCanvasElement , roomId: string , socket:WebSocket){
     const ctx = canvas?.getContext("2d"); 
@@ -94,7 +100,7 @@ export async function initDraw(canvas: HTMLCanvasElement , roomId: string , sock
     })
 
     canvas?.addEventListener("mousemove", (e) => { 
-        if(click){ 3
+        if(click){ 
             const width = e.clientX - startX; 
             const height = e.clientY - startY;
             clearCanvas( existingShapes , canvas , ctx )   
@@ -124,10 +130,10 @@ function clearCanvas(existingShapes: Shape[], canvas:HTMLCanvasElement , ctx:Can
     existingShapes.map((shape) => { 
         if(shape.type == "rect"){
             ctx.strokeStyle = "rgba(255 , 255 ,255)"
-            ctx.strokeRect(shape.x, shape.y, shape.width, shape.height);
+            ctx.strokeRect(shape.x!, shape.y!, shape.width!, shape.height!); 
         }else if(shape.type == "circle"){ 
             ctx.beginPath();
-            ctx.arc(shape.centerX , shape.centerY , shape.radius, 0 , Math.PI * 2);
+            ctx.arc(shape.centerX! , shape.centerY! , shape.radius!, 0 , Math.PI * 2);
             ctx.stroke(); 
             ctx.closePath();
         }
