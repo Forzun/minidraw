@@ -11,7 +11,6 @@ export default function IconButton({
     active: boolean;
 }){
 
-    console.log(active)
     return <button onClick={onClick} className={`${className} p-2 rounded-full border border-neutral-400 flex items-center justify-center ${active ? "text-blue-500" : "text-gray-200"}`}>
         {Icon}
     </button>
