@@ -1,6 +1,3 @@
-import RoomCanvas from "@/components/RoomCanvas";
-import { HTTP_BACKEND } from "@/config";
-import axios from "axios";
 
 export default async function CanvasPage({params} : { 
 params:{ 
@@ -11,7 +8,7 @@ params:{
     console.log(roomId);
 
     return <div>
-        <RoomCanvas roomId={roomId} /> 
+        {/* <RoomCanvas roomId={roomId} />  */}
     </div>
 }
 
