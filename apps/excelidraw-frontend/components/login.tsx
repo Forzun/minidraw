@@ -5,8 +5,9 @@ import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { useEffect, useRef, useState } from "react"
+import { useRef } from "react"
 import axios from "axios"
+import { redirect } from "next/navigation"
 
 
 export function LoginForm({
@@ -36,6 +37,9 @@ export function LoginForm({
       })
       const token = response.data.token; 
       localStorage.setItem("token", token)
+      if(token){ 
+          redirect("/")
+      }
      }catch(error) { 
       console.log(error)
      }

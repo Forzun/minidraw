@@ -4,6 +4,8 @@ export default function Authpage({isSignin} : {
     isSignin: boolean;
 }){ 
 
+    
+
     return ( 
         <div className="w-full h-screen flex items-center justify-center">
             <input type="text" className="py-2 px-3" placeholder="john@gmail.com" />
