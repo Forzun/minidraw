@@ -1,6 +1,5 @@
 import { tool } from "@/components/canvas";
 import { getExistingCanvas } from "./http";
-import { Pencil } from "lucide-react";
 
 type Shape = { 
     type: "rect";
