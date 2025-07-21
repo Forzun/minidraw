@@ -1,25 +1,14 @@
 "use client";
 import CanvasCard from "@/components/canvasCard";
-import { getCanvas } from "@/hook/getCanvas";
 import UseAuth from "@/hook/useAuth";
 import { LogOut, SquarePlus } from "lucide-react";
-import { useEffect, useState } from "react";
 
 export default function CanvasLogPage() {
-  const [roomId , setRoomId] = useState(null);
   const { user , room } = UseAuth();
 
-  useEffect(() => { 
-    const fetchRoom = async () => { 
-        if(!user && !room){
-          return; 
-        }
-        console.log(room)
-        const roomData = await getCanvas();
-        setRoomId(roomData);
-    }
-    fetchRoom();
-  }, [user])
+  if(!user || !room){ 
+    return <div>Loading..</div>
+  }
 
   return (
     <div className="flex min-h-screen h-full w-full relative flex-col md:py-8 py-5 px-5">
@@ -34,7 +23,9 @@ export default function CanvasLogPage() {
           </div>
         </div>
         <div className="grid md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 grid-cols-1 px-3 h-[67vh] w-full ">
-          <CanvasCard  />
+          {room.map((value , index:number) => { 
+            return <CanvasCard key={index} user={user} room={value} />
+          })}
         </div>
       </div>
     </div>

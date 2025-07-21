@@ -3,9 +3,24 @@ import axios from "axios";
 import { redirect } from "next/navigation";
 import { useEffect, useState } from "react"
 
+export interface room { 
+    id: string; 
+    slug: string; 
+    createAt: string;
+    adminId: string;
+  }
+
+export interface user { 
+    id: string; 
+    email: string; 
+    password: string;
+    name: string; 
+    photo?: string | null;
+}
+
 export default function UseAuth(){ 
-    const [user , setUser] = useState(null);
-    const [room , setRoom] = useState(null);
+    const [user , setUser] = useState<user>();
+    const [room , setRoom] = useState<room[]>([]);
 
     useEffect(() => {
         const fetchUser = async () => { 
