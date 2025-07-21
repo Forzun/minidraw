@@ -185,5 +185,40 @@ app.get("/room/:slug", async (req ,res) => {
 
 })
 
+app.get("/user", userMiddleware , async (req , res) => { 
+   try{ 
+    //@ts-ignore
+    const userId = req.userId; 
+    console.log(userId);
+
+    const user = await prismaClient.user.findFirst({
+        where:{ 
+        id:userId
+        }
+    })
+
+    const room = await prismaClient.room.findMany({ 
+        where: {
+            adminId:userId
+        }
+    })
+
+    if(user){ 
+        res.status(200).json({ 
+            data: { 
+                user:user, 
+                rooms:room
+            }
+        })
+    }
+
+   }catch(error){ 
+       res.status(400).json({
+           error:error
+       })
+   }
+
+})
+
 
 app.listen(3002);

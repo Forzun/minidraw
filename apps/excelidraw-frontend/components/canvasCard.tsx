@@ -1,7 +1,7 @@
 import { FolderPen, GlobeLock , Timer, User } from "lucide-react";
 import { Button } from "./ui/button";
 
-export default function CanvasCard({room}) {
+export default function CanvasCard() {
   return (
     <div className="w-70 mt-3 h-fit rounded-xl border-1 p-4 bg-neutral-900 border-neutral-700/30 shadow-[0px_2px_3px_-1px_rgba(0,0,0,0.1),0px_1px_0px_0px_rgba(25,28,33,0.02),0px_0px_0px_1px_rgba(25,28,33,0.08)]"> 
       <div className="w-16 h-16 rounded-full border-neutral-600 border-2 border-dashed object-cover"></div>
