@@ -13,7 +13,7 @@ export default function RoomCanvas({roomId}: { roomId: string}){
         if(!token){ 
             return;
         }
-        const ws = new WebSocket(`${WS_URL}?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJhYjNlZDZhMC00NWYxLTQwZTctOTNmNS02MjBlNjA4ODc4MzQiLCJpYXQiOjE3NTE5ODE1Nzd9.3-CvMZbS7wAV_AWULhvyBkSyv7xG9VaPPfDO1MyXel4`); 
+        const ws = new WebSocket(`${WS_URL}?token=${token}`); 
         
         ws.onopen = () => { 
             setSocket(ws)
@@ -22,7 +22,7 @@ export default function RoomCanvas({roomId}: { roomId: string}){
                 roomId
             }))
         }
-    }, [])
+    }, [roomId])
 
     if(!socket){ 
         return <div>

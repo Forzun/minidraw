@@ -8,6 +8,7 @@ import { Label } from "@/components/ui/label"
 import { useRef } from "react"
 import axios from "axios"
 import { redirect } from "next/navigation"
+import { HTTP_BACKEND } from "@/config"
 
 
 export function LoginForm({
@@ -31,7 +32,7 @@ export function LoginForm({
      console.log(uesrname , password)
 
      try{ 
-      const response = await axios.post("http://localhost:3002/signin" , { 
+      const response = await axios.post(`${HTTP_BACKEND}/signin` , { 
         username: uesrname, 
         password: password.toString()
       })

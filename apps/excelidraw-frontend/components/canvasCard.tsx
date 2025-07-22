@@ -1,6 +1,8 @@
+"use client";
 import { FolderPen, GlobeLock , Timer, User } from "lucide-react";
 import { Button } from "./ui/button";
 import { room, user } from "@/hook/useAuth";
+import { redirect } from "next/navigation";
 
 export default function CanvasCard({room , user} : {room:room , user:user}) {
 
@@ -35,7 +37,9 @@ export default function CanvasCard({room , user} : {room:room , user:user}) {
         </span>
       </div>
       <div className="relative mt-3 ">
-        <Button className="w-full bg-yellow-700" variant={"secondary"}>
+        <Button onClick={() => { 
+              redirect(`/canvas/${room.id}`)
+        }} className="w-full bg-yellow-700" variant={"secondary"}>
           MakeDraw
         </Button>
       </div>

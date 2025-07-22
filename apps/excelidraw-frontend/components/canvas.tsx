@@ -1,4 +1,3 @@
-import { initDraw } from "@/draw";
 import { useEffect, useRef, useState } from "react";
 import IconButton from "./IconButton";
 import { Circle, Minus, Pencil, RectangleHorizontal } from "lucide-react";
@@ -27,7 +26,7 @@ export default function Canvas({roomId , socket} : {roomId: string , socket:WebS
             }
         }        
 
-    }, [canvasRef])
+    }, [roomId , socket])
 
     return <div className="w-full h-screen relative">
         <canvas ref={canvasRef} width={window.innerWidth} height={window.innerHeight}></canvas>     
